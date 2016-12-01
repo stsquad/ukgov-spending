@@ -11,6 +11,9 @@
 # tbl <- read.csv(file.choose(),header=TRUE,sep=",",fileEncoding="latin1")
 tbl <- read.csv("clean.csv",header=TRUE,sep=",",fileEncoding="latin1")
 
+## Lets tweak amount to be a real number
+tbl$Amount <- as.numeric(gsub(",", "", sub("\\£","", tbl$Amount)))
+
 # Lets iterate the the names/table heads
 for(n in names(tbl)){
     cat ("Looking at heading: ", n, "\n")
@@ -22,3 +25,13 @@ for(n in names(tbl)){
 # Looking at the DWP CSV files I reckon
 # Departmental Family,Entity,Expense Type,Expense Area,Supplier
 #dpf <- pivotOptions(tbl[["Departmental.Family"]])
+
+## So lets extract all the unqiue Expense.Types
+expTypes <- unique(tbl[["Expense.Type"]])
+
+for (e in expTypes) {
+    ## Sum up all rows with this expense type
+
+    totalCost = sum(tbl[tbl$"Expense.Type" == e, "Amount"])
+    cat ("For ", e, " total is ", totalCost, "\n")
+}
